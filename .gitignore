@@ -1,0 +1,15 @@
+# Binaries
+*.exe
+
+# Generated Simulation/Error Outputs
+hnn_sim.csv
+hnn_errors.csv
+made_files/simulated_data.csv
+made_files/saved_errors.csv
+
+# Dependencies
+eigen/
+
+# Local/IDE
+.vscode/
+__pycache__/
