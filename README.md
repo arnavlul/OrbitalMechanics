@@ -28,7 +28,7 @@ g++ -O3 -march=native hnn.cpp -o hnn.exe
    ```
 2. **Train & Simulate**:
    ```bash
-   ./hnn
+   ./hnn.exe
    ```
 3. **Visualize**:
    ```bash
