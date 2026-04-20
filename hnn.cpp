@@ -6,6 +6,7 @@
 #include <sstream>
 #include <random>
 #include <cmath>
+#include <iomanip>
 #define endl '\n'
 using namespace std;
 using namespace Eigen;
@@ -15,12 +16,12 @@ const string TEST_FILE;
 const string ERRORS_FILE = "hnn_errors.csv";
 const string SIMULATION_FILE = "hnn_sim.csv";
 
-const int NUM_EPOCHS = 1000;
+const int NUM_EPOCHS = 200;
 const int INPUT_SIZE = 6;
 const int OUTPUT_SIZE = 1;
 const int BATCH_SIZE = 512;
-const int NEURONS_H1 = 256;
-const int NEURONS_H2 = 256;
+const int NEURONS_H1 = 128;
+const int NEURONS_H2 = 128;
 const double epsilon = 0.0000001;
 double alpha = 0.0001;
 double lambda = 0.0;
@@ -463,19 +464,20 @@ void save_error_to_file(const string &filename, const vector<vector<double>> &da
     }
 
     file << "Epoch,Total Error,MSE Error,Energy Error" << endl;
+    file << scientific << setprecision(10); // Use scientific notation for all values
 
     for(int i=0; i<data.size(); i++){
         file << i+1 << "," << data[i][0] << "," << data[i][1] << "," << data[i][2] << endl;
     }
 }
 
-void get_hyperparameters(const int &epoch, double &alpha, double &lamda){
-    if(epoch < 200) alpha = 0.001;
-    else if(epoch < 700) alpha = 0.0005;
+void get_hyperparameters(const int &epoch, double &alpha, double &lambda){
+    if(epoch < 100) alpha = 0.001;
+    else if(epoch < 150) alpha = 0.0005;
     else alpha = 0.0001;
 
-    if(epoch < 300) lambda = 0.0;
-    else lambda = 1e-6;
+    if(epoch < 70) lambda = 0.0;
+    else lambda = 1.0;
     return;
 }
 
@@ -510,6 +512,7 @@ int main(){
         cout << "Epoch " << i+1 << " starting" << endl;
 
         get_hyperparameters(i, alpha, lambda);
+        cout << "alpha: " << alpha << scientific << setprecision(8) << "; lambda" << lambda << scientific << setprecision(8) << endl;
 
         for(int j=0;j<num_batches; j++){
             MatrixXd I(6, BATCH_SIZE), T(6, BATCH_SIZE);
@@ -524,7 +527,8 @@ int main(){
             epoch_mse += batch_mse;
             epoch_energy += batch_energy;
         }
-        cout << "\tTotal Loss: " << epoch_loss << ", MSE Loss: " << epoch_mse << ", Energy Loss: " << epoch_energy << endl;
+        cout << "\tTotal Loss: " << scientific << setprecision(8) << epoch_loss << ", MSE Loss: " << epoch_mse << ", Energy Loss: " << epoch_energy << endl;
+        cout << defaultfloat; // Reset to default float formatting for subsequent outputs if any
         vector<double> losses = {epoch_loss, epoch_mse, epoch_energy};
         loss_over_time.push_back(losses);
     }

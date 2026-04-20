@@ -39,3 +39,15 @@ g++ -O3 -march=native hnn.cpp -o hnn.exe
 - `hnn.cpp`: Main HNN implementation.
 - `plotter.py`: 3D orbit and loss visualization.
 - `test_files/`: Source data for planetary orbits.
+
+## Results
+
+![Trial Run](trial_run.png)
+
+### Analysis of Orbital Deviations
+
+The predicted orbit exhibits noticeable irregularities compared to the ground truth. This divergence can be attributed to several key factors:
+
+*   **Hamiltonian Constraint**: Total energy conservation was incorporated via the loss function rather than being strictly enforced as a hard constraint. Consequently, the Hamiltonian is not perfectly conserved over long durations.
+*   **Normalization Challenges**: Significant scale differences in planetary distances (e.g., Icarus ranging from **0.187 AU** to **1.97 AU**) create numerical stability issues during normalization.
+*   **Numerical Gradients**: In the absence of an AutoGrad library, gradients were approximated numerically. This approach is inherently less precise than symbolic or automatic differentiation, leading to accumulated errors during backpropagation.
